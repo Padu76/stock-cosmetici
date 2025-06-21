@@ -640,11 +640,20 @@
             const totalQuantity = products.reduce((sum, p) => sum + p.quantita, 0);
             const totalValue = products.reduce((sum, p) => sum + (p.prezzo * p.quantita), 0);
 
-            document.getElementById('stats-content').innerHTML = `
-                <strong>${availableProducts}/${totalProducts}</strong> prodotti disponibili | 
-                <strong>${totalQuantity}</strong> pezzi totali | 
-                Valore stock: <strong>${totalValue}€</strong>
-            `;
+            if (adminMode) {
+                // Modalità admin - mostra tutto incluso valore
+                document.getElementById('stats-content').innerHTML = `
+                    <strong>${availableProducts}/${totalProducts}</strong> prodotti disponibili | 
+                    <strong>${totalQuantity}</strong> pezzi totali | 
+                    Valore stock: <strong>${totalValue}€</strong>
+                `;
+            } else {
+                // Modalità cliente - nasconde il valore
+                document.getElementById('stats-content').innerHTML = `
+                    <strong>${availableProducts}/${totalProducts}</strong> prodotti disponibili | 
+                    <strong>${totalQuantity}</strong> pezzi totali
+                `;
+            }
         }
 
         // Inizializza app
