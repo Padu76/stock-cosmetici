@@ -338,111 +338,105 @@
         // Stato admin
         let adminMode = false;
 
-        // Tutti i 13 prodotti dal file Excel
+        // Tutti i 13 prodotti con foto da GitHub
         const products = [
             {
                 "nome": "CREMA ANTIRUGHE NUTRIENTE",
                 "prezzo": 15,
                 "quantita": 1,
-                "immagine": "Crema Antirughe Nutriente – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-antirughe.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTIRUGHE NUTRIENTE"
             },
             {
                 "nome": "CREMA MANI GIOVINEZZA",
                 "prezzo": 3,
                 "quantita": 3,
-                "immagine": "Crema Mani Giovinezza 6 in 1 – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-mani.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA MANI GIOVINEZZA"
             },
             {
                 "nome": "CREMA RASSODANTE corpo & viso",
                 "prezzo": 15,
                 "quantita": 1,
-                "immagine": "Crema Rassodante Tonificante – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-rassodante.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RASSODANTE corpo & viso"
             },
             {
                 "nome": "CREMA IDRATANTE CORPO",
                 "prezzo": 15,
                 "quantita": 1,
-                "immagine": "Crema Relax Massaggio – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-relax.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA IDRATANTE CORPO"
             },
             {
                 "nome": "CREMA RIGENERANTE OCCHI & DECOLTE'",
                 "prezzo": 15,
                 "quantita": 1,
-                "immagine": "Crema Rigenerante Occhi Labbra & Decolletè – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-rigenerante-decolte.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RIGENERANTE OCCHI & DECOLTE'"
             },
             {
                 "nome": "CREMA ANTICELLULITE",
                 "prezzo": 15,
                 "quantita": 1,
-                "immagine": "Crema Snellente Anticellulite – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-snellente.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTICELLULITE"
             },
             {
                 "nome": "LATTE CORPO GIOVINEZZA",
                 "prezzo": 12,
                 "quantita": 1,
-                "immagine": "Latte Corpo Giovinezza – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/lattecorpo.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE CORPO GIOVINEZZA"
             },
             {
                 "nome": "LATTE MICELLARE DETERGENTE/STRUCCANTE",
                 "prezzo": 12,
                 "quantita": 2,
-                "immagine": "Latte Micellare Detergente & Struccante – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/latte-micellare.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE MICELLARE DETERGENTE/STRUCCANTE"
             },
             {
                 "nome": "OLIO SETIFICANTE IDRATANTE",
                 "prezzo": 14,
                 "quantita": 1,
-                "immagine": "Olio Setificante – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/olio-setificante.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare OLIO SETIFICANTE IDRATANTE"
             },
             {
                 "nome": "BURRO DI KARITE' + VITAMINE A-C-E",
                 "prezzo": 12,
                 "quantita": 1,
-                "immagine": "Vitamine A.C.E. in Burro di Karitè BIO – Garda Lake Beauty",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/burro-karite-vitace.png",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare BURRO DI KARITE' + VITAMINE A-C-E"
             },
             {
                 "nome": "Shampoo daily use - Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
-                "immagine": "https://drive.google.com/file/d/1UUtCJ3CuwU-ffNCqYPlpN5jeQr84DlcM/view?usp=sharing",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/shampoo-daily.jpeg",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo daily use - Olio di Argan"
             },
             {
                 "nome": "Balsamo – Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
-                "immagine": "https://drive.google.com/file/d/1UUtCJ3CuwU-ffNCqYPlpN5jeQr84DlcM/view?usp=sharing",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/balsamo.jpeg",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Balsamo – Olio di Argan"
             },
             {
                 "nome": "Shampoo detox – Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
-                "immagine": "https://drive.google.com/file/d/1UUtCJ3CuwU-ffNCqYPlpN5jeQr84DlcM/view?usp=sharing",
+                "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/shampoo-detox.jpeg",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo detox – Olio di Argan"
             }
         ];
 
-        // Converte link Google Drive in URL diretti per le anteprime
-        function getImageUrl(imageData) {
-            if (imageData.includes('drive.google.com')) {
-                // Estrae l'ID dal link Google Drive
-                const fileId = imageData.match(/\/d\/([a-zA-Z0-9-_]+)/);
-                if (fileId) {
-                    return `https://drive.google.com/uc?export=view&id=${fileId[1]}`;
-                }
-            }
-            return null; // Per i prodotti Garda Lake Beauty useremo placeholder
+        // Converte link immagini (ora tutte vengono da GitHub)
+        function getImageUrl(imageUrl) {
+            // Ora tutte le immagini sono già link diretti da GitHub
+            return imageUrl;
         }
 
         // Carica quantità salvate dal localStorage
@@ -471,7 +465,7 @@
             const imageUrl = getImageUrl(product.immagine);
             
             const imageElement = imageUrl ? 
-                `<img src="${imageUrl}" alt="${product.nome}" onerror="this.parentElement.innerHTML='🧴<br>Foto non disponibile'">` :
+                `<img src="${imageUrl}" alt="${product.nome}" onerror="this.parentElement.innerHTML='🧴<br>Immagine non disponibile'">` :
                 `🧴<br>${product.nome.split(' ').slice(0, 3).join(' ')}`;
 
             const quantityDisplay = adminMode ? 
@@ -487,7 +481,7 @@
 
             return `
                 <div class="product-card">
-                    <div class="product-image ${!imageUrl ? 'placeholder' : ''}">
+                    <div class="product-image ${!imageUrl ? 'placeholder' : ''}">>
                         ${product.quantita === 1 ? '<div class="ultimo-pezzo">ULTIMO PEZZO!</div>' : ''}
                         ${imageElement}
                     </div>
