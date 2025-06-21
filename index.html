@@ -65,7 +65,7 @@
         .product-image {
             width: 100%;
             height: 200px;
-            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -73,16 +73,16 @@
             font-size: 1.1em;
             position: relative;
             overflow: hidden;
+            border-radius: 15px 15px 0 0;
         }
 
         .product-image img {
-            width: 100%;
-            height: 100%;
+            max-width: 90%;
+            max-height: 90%;
             object-fit: contain;
             object-position: center;
             cursor: pointer;
             transition: transform 0.3s ease;
-            background: white;
         }
 
         .product-image img:hover {
@@ -634,6 +634,15 @@
 
         // Funzioni admin per gestione quantità
         function toggleAdminMode() {
+            if (!adminMode) {
+                // Richiedi password per entrare in modalità admin
+                const password = prompt('Inserisci la password per gestire lo stock:');
+                if (password !== 'garda') {
+                    alert('Password non corretta!');
+                    return;
+                }
+            }
+            
             adminMode = !adminMode;
             const btn = document.getElementById('admin-toggle');
             const body = document.body;
