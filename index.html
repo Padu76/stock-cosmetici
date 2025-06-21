@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Cosmetici - Rimanenze</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1.1em;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image.placeholder {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .product-content {
+            padding: 20px;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .product-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+            margin-right: 10px;
+            line-height: 1.3;
+        }
+
+        .product-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            white-space: nowrap;
+        }
+
+        .product-quantity {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .quantity-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .quantity-badge.low {
+            background: #FF9800;
+        }
+
+        .quantity-badge.out {
+            background: #F44336;
+        }
+
+        .reserve-btn {
+            width: 100%;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .reserve-btn:hover {
+            background: #1fb855;
+        }
+
+        .reserve-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .stats h3 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 15px;
+            }
+
+            .product-image {
+                height: 150px;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            margin: 50px 0;
+        }
+
+        .ultimo-pezzo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #FF5722;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .admin-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .admin-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .admin-mode .quantity-badge {
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .admin-mode .quantity-badge:hover {
+            background: #2196F3;
+        }
+
+        .quantity-editor {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .quantity-input {
+            width: 60px;
+            padding: 2px 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .quantity-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .qty-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .qty-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .admin-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 152, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+        }
+
+        .admin-mode .admin-indicator {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌸 Stock Cosmetici</h1>
+            <p>Rimanenze disponibili - Prenota subito!</p>
+        </div>
+
+        <div id="loading" class="loading">
+            Caricamento prodotti...
+        </div>
+
+        <div id="products-container" class="products-grid" style="display: none;">
+        </div>
+
+        <div id="stats" class="stats" style="display: none;">
+            <h3>📊 Statistiche Stock</h3>
+            <p id="stats-content"></p>
+        </div>
+
+        <div class="admin-controls">
+            <button id="admin-toggle" class="admin-btn" onclick="toggleAdminMode()">
+                🔧 Gestisci Stock
+            </button>
+        </div>
+
+        <div id="admin-indicator" class="admin-indicator">
+            👑 Modalità Admin Attiva
+        </div>
+    </div>
+
+    <script>
+        // Stato admin
+        let adminMode = false;
+
+        // Tutti i 13 prodotti dal file Excel
+        const products = [
+            {
+                "nome": "CREMA ANTIRUGHE NUTRIENTE",
+                "prezzo": 15,
+                "quantita": 1,
+                "immagine": "Crema Antirughe Nutriente – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTIRUGHE NUTRIENTE"
+            },
+            {
+                "nome": "CREMA MANI GIOVINEZZA",
+                "prezzo": 3,
+                "quantita": 3,
+                "immagine": "Crema Mani Giovinezza 6 in 1 – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA MANI GIOVINEZZA"
+            },
+            {
+                "nome": "CREMA RASSODANTE corpo & viso",
+                "prezzo": 15,
+                "quantita": 1,
+                "immagine": "Crema Rassodante Tonificante – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RASSODANTE corpo & viso"
+            },
+            {
+                "nome": "CREMA IDRATANTE CORPO",
+                "prezzo": 15,
+                "quantita": 1,
+                "immagine": "Crema Relax Massaggio – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA IDRATANTE CORPO"
+            },
+            {
+                "nome": "CREMA RIGENERANTE OCCHI & DECOLTE'",
+                "prezzo": 15,
+                "quantita": 1,
+                "immagine": "Crema Rigenerante Occhi Labbra & Decolletè – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RIGENERANTE OCCHI & DECOLTE'"
+            },
+            {
+                "nome": "CREMA ANTICELLULITE",
+                "prezzo": 15,
+                "quantita": 1,
+                "immagine": "Crema Snellente Anticellulite – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTICELLULITE"
+            },
+            {
+                "nome": "LATTE CORPO GIOVINEZZA",
+                "prezzo": 12,
+                "quantita": 1,
+                "immagine": "Latte Corpo Giovinezza – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE CORPO GIOVINEZZA"
+            },
+            {
+                "nome": "LATTE MICELLARE DETERGENTE/STRUCCANTE",
+                "prezzo": 12,
+                "quantita": 2,
+                "immagine": "Latte Micellare Detergente & Struccante – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE MICELLARE DETERGENTE/STRUCCANTE"
+            },
+            {
+                "nome": "OLIO SETIFICANTE IDRATANTE",
+                "prezzo": 14,
+                "quantita": 1,
+                "immagine": "Olio Setificante – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare OLIO SETIFICANTE IDRATANTE"
+            },
+            {
+                "nome": "BURRO DI KARITE' + VITAMINE A-C-E",
+                "prezzo": 12,
+                "quantita": 1,
+                "immagine": "Vitamine A.C.E. in Burro di Karitè BIO – Garda Lake Beauty",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare BURRO DI KARITE' + VITAMINE A-C-E"
+            },
+            {
+                "nome": "Shampoo daily use - Olio di Argan",
+                "prezzo": 5,
+                "quantita": 1,
+                "immagine": "https://drive.google.com/file/d/1UUtCJ3CuwU-ffNCqYPlpN5jeQr84DlcM/view?usp=sharing",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo daily use - Olio di Argan"
+            },
+            {
+                "nome": "Balsamo – Olio di Argan",
+                "prezzo": 5,
+                "quantita": 1,
+                "immagine": "https://drive.google.com/file/d/1UUtCJ3CuwU-ffNCqYPlpN5jeQr84DlcM/view?usp=sharing",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Balsamo – Olio di Argan"
+            },
+            {
+                "nome": "Shampoo detox – Olio di Argan",
+                "prezzo": 5,
+                "quantita": 1,
+                "immagine": "https://drive.google.com/file/d/1UUtCJ3CuwU-ffNCqYPlpN5jeQr84DlcM/view?usp=sharing",
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo detox – Olio di Argan"
+            }
+        ];
+
+        // Converte link Google Drive in URL diretti per le anteprime
+        function getImageUrl(imageData) {
+            if (imageData.includes('drive.google.com')) {
+                // Estrae l'ID dal link Google Drive
+                const fileId = imageData.match(/\/d\/([a-zA-Z0-9-_]+)/);
+                if (fileId) {
+                    return `https://drive.google.com/uc?export=view&id=${fileId[1]}`;
+                }
+            }
+            return null; // Per i prodotti Garda Lake Beauty useremo placeholder
+        }
+
+        // Carica quantità salvate dal localStorage
+        function loadQuantities() {
+            const saved = localStorage.getItem('cosmetics-stock');
+            if (saved) {
+                const savedData = JSON.parse(saved);
+                products.forEach(product => {
+                    const savedProduct = savedData.find(p => p.nome === product.nome);
+                    if (savedProduct) {
+                        product.quantita = savedProduct.quantita;
+                    }
+                });
+            }
+        }
+
+        // Salva quantità nel localStorage
+        function saveQuantities() {
+            localStorage.setItem('cosmetics-stock', JSON.stringify(products));
+        }
+
+        // Crea card prodotto
+        function createProductCard(product) {
+            const quantityClass = product.quantita === 0 ? 'out' : (product.quantita === 1 ? 'low' : '');
+            const quantityText = product.quantita === 0 ? 'Esaurito' : `${product.quantita} disponibili`;
+            const imageUrl = getImageUrl(product.immagine);
+            
+            const imageElement = imageUrl ? 
+                `<img src="${imageUrl}" alt="${product.nome}" onerror="this.parentElement.innerHTML='🧴<br>Foto non disponibile'">` :
+                `🧴<br>${product.nome.split(' ').slice(0, 3).join(' ')}`;
+
+            const quantityDisplay = adminMode ? 
+                `<div class="quantity-editor">
+                    <input type="number" class="quantity-input" value="${product.quantita}" 
+                           onchange="updateQuantity('${product.nome}', this.value)" min="0" max="99">
+                    <div class="quantity-buttons">
+                        <button class="qty-btn" onclick="changeQuantity('${product.nome}', 1)">+</button>
+                        <button class="qty-btn" onclick="changeQuantity('${product.nome}', -1)">-</button>
+                    </div>
+                 </div>` :
+                `<span class="quantity-badge ${quantityClass}" ${adminMode ? 'onclick="editQuantity(this)"' : ''}>${quantityText}</span>`;
+
+            return `
+                <div class="product-card">
+                    <div class="product-image ${!imageUrl ? 'placeholder' : ''}">
+                        ${product.quantita === 1 ? '<div class="ultimo-pezzo">ULTIMO PEZZO!</div>' : ''}
+                        ${imageElement}
+                    </div>
+                    <div class="product-content">
+                        <div class="product-header">
+                            <div class="product-name">${product.nome}</div>
+                            <div class="product-price">${product.prezzo}€</div>
+                        </div>
+                        <div class="product-quantity">
+                            <span>Disponibilità:</span>
+                            ${quantityDisplay}
+                        </div>
+                        ${product.quantita > 0 && !adminMode ? 
+                            `<a href="${product.whatsapp}" class="reserve-btn" target="_blank" onclick="reserveProduct('${product.nome}')">
+                                💬 Prenota su WhatsApp
+                            </a>` :
+                            product.quantita === 0 && !adminMode ?
+                            `<button class="reserve-btn" disabled>Prodotto Esaurito</button>` :
+                            adminMode ? 
+                            `<div style="text-align: center; color: #666; font-style: italic; padding: 10px;">Modalità gestione quantità</div>` : ''
+                        }
+                    </div>
+                </div>
+            `;
+        }
+
+        // Prenota prodotto (diminuisce quantità)
+        function reserveProduct(productName) {
+            const product = products.find(p => p.nome === productName);
+            if (product && product.quantita > 0) {
+                product.quantita--;
+                saveQuantities();
+                
+                setTimeout(() => {
+                    renderProducts();
+                    updateStats();
+                }, 100);
+            }
+        }
+
+        // Renderizza tutti i prodotti
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = products.map(createProductCard).join('');
+        }
+
+        // Aggiorna statistiche
+        function updateStats() {
+            const totalProducts = products.length;
+            const availableProducts = products.filter(p => p.quantita > 0).length;
+            const totalQuantity = products.reduce((sum, p) => sum + p.quantita, 0);
+            const totalValue = products.reduce((sum, p) => sum + (p.prezzo * p.quantita), 0);
+
+            document.getElementById('stats-content').innerHTML = `
+                <strong>${availableProducts}/${totalProducts}</strong> prodotti disponibili | 
+                <strong>${totalQuantity}</strong> pezzi totali | 
+                Valore stock: <strong>${totalValue}€</strong>
+            `;
+        }
+
+        // Inizializza app
+        function init() {
+            loadQuantities();
+            
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('products-container').style.display = 'grid';
+                document.getElementById('stats').style.display = 'block';
+                
+                renderProducts();
+                updateStats();
+            }, 1000);
+        }
+
+        // Avvia app
+        init();
+
+        // Reset stock (funzione nascosta per te)
+        function resetStock() {
+            if (confirm('Sei sicuro di voler ripristinare tutto lo stock?')) {
+                localStorage.removeItem('cosmetics-stock');
+                location.reload();
+            }
+        }
+
+        // Puoi chiamare resetStock() dalla console del browser se serve
+
+        // Funzioni admin per gestione quantità
+        function toggleAdminMode() {
+            adminMode = !adminMode;
+            const btn = document.getElementById('admin-toggle');
+            const body = document.body;
+            
+            if (adminMode) {
+                btn.textContent = '👀 Modalità Cliente';
+                btn.style.background = '#FF9800';
+                body.classList.add('admin-mode');
+            } else {
+                btn.textContent = '🔧 Gestisci Stock';
+                btn.style.background = '#667eea';
+                body.classList.remove('admin-mode');
+            }
+            
+            renderProducts();
+            updateStats();
+        }
+
+        function updateQuantity(productName, newQuantity) {
+            const product = products.find(p => p.nome === productName);
+            if (product) {
+                product.quantita = Math.max(0, parseInt(newQuantity) || 0);
+                saveQuantities();
+                updateStats();
+                
+                // Aggiorna solo questa card per evitare il re-render completo
+                setTimeout(() => renderProducts(), 100);
+            }
+        }
+
+        function changeQuantity(productName, delta) {
+            const product = products.find(p => p.nome === productName);
+            if (product) {
+                product.quantita = Math.max(0, product.quantita + delta);
+                saveQuantities();
+                renderProducts();
+                updateStats();
+            }
+        }
+    </script>
+</body>
+</html>
