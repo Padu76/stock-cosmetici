@@ -64,7 +64,7 @@
 
         .product-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             background: white;
             display: flex;
             align-items: center;
@@ -74,11 +74,12 @@
             position: relative;
             overflow: hidden;
             border-radius: 15px 15px 0 0;
+            padding: 10px;
         }
 
         .product-image img {
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 85%;
+            max-height: 85%;
             object-fit: contain;
             object-position: center;
             cursor: pointer;
@@ -121,6 +122,27 @@
             font-weight: bold;
             color: #667eea;
             white-space: nowrap;
+        }
+
+        .info-btn {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #6c757d;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s ease;
+            margin-left: 8px;
+        }
+
+        .info-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
 
         .product-quantity {
@@ -401,13 +423,14 @@
         // Stato admin
         let adminMode = false;
 
-        // Tutti i 13 prodotti con foto corrette da GitHub
+        // Tutti i 13 prodotti con foto corrette e link schede tecniche
         const products = [
             {
                 "nome": "CREMA ANTIRUGHE NUTRIENTE",
                 "prezzo": 15,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-antirughe.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/crema-antirughe-nutriente/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTIRUGHE NUTRIENTE"
             },
             {
@@ -415,6 +438,7 @@
                 "prezzo": 3,
                 "quantita": 3,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-mani.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/crema-mani-giovinezza-6-in-1/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA MANI GIOVINEZZA"
             },
             {
@@ -422,6 +446,7 @@
                 "prezzo": 15,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-rassodante.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/crema-rassodante-tonificante/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RASSODANTE corpo & viso"
             },
             {
@@ -429,6 +454,7 @@
                 "prezzo": 15,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-relax-massaggio.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/crema-relax-massaggio/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA IDRATANTE CORPO"
             },
             {
@@ -436,6 +462,7 @@
                 "prezzo": 15,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-rigenerante-decolte.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/crema-rigenerante-occhi-labbra-decollete/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RIGENERANTE OCCHI & DECOLTE'"
             },
             {
@@ -443,6 +470,7 @@
                 "prezzo": 15,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/crema-snellente.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/crema-snellente-corpo-gambe/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTICELLULITE"
             },
             {
@@ -450,6 +478,7 @@
                 "prezzo": 12,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/lattecorpo.png",
+                "scheda": "https://www.gardalakebeauty.com/shop-2/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE CORPO GIOVINEZZA"
             },
             {
@@ -457,6 +486,7 @@
                 "prezzo": 12,
                 "quantita": 2,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/latte-micellare.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/latte-micellare-detergente-struccante/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE MICELLARE DETERGENTE/STRUCCANTE"
             },
             {
@@ -464,6 +494,7 @@
                 "prezzo": 14,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/olio-setificante.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/olio-setificante/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare OLIO SETIFICANTE IDRATANTE"
             },
             {
@@ -471,6 +502,7 @@
                 "prezzo": 12,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/burro-karite-vitace.png",
+                "scheda": "https://www.gardalakebeauty.com/prodotti/vitamine-a-c-e-in-burro-di-karite-bio/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare BURRO DI KARITE' + VITAMINE A-C-E"
             },
             {
@@ -478,6 +510,7 @@
                 "prezzo": 5,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/shampoo-daily.jpeg",
+                "scheda": "https://www.gardalakebeauty.com/shop-2/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo daily use - Olio di Argan"
             },
             {
@@ -485,6 +518,7 @@
                 "prezzo": 5,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/balsamo.jpeg",
+                "scheda": "https://www.gardalakebeauty.com/shop-2/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Balsamo – Olio di Argan"
             },
             {
@@ -492,6 +526,7 @@
                 "prezzo": 5,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/shampoo-detox.jpeg",
+                "scheda": "https://www.gardalakebeauty.com/shop-2/",
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo detox – Olio di Argan"
             }
         ];
@@ -551,7 +586,10 @@
                     <div class="product-content">
                         <div class="product-header">
                             <div class="product-name">${product.nome}</div>
-                            <div class="product-price">${product.prezzo}€</div>
+                            <div style="display: flex; align-items: center;">
+                                <div class="product-price">${product.prezzo}€</div>
+                                <a href="${product.scheda}" target="_blank" class="info-btn">📋 Info</a>
+                            </div>
                         </div>
                         <div class="product-quantity">
                             <span>Disponibilità:</span>
