@@ -571,10 +571,16 @@
             }
         ];
 
-        // Converte link immagini (ora tutte vengono da GitHub)
-        function getImageUrl(imageUrl) {
-            // Ora tutte le immagini sono già link diretti da GitHub
-            return imageUrl;
+        // Funzione per fare l'escape sicuro delle stringhe HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
 
         // Carica quantità salvate dal localStorage
