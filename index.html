@@ -396,18 +396,6 @@
         .close-modal:hover {
             opacity: 0.7;
         }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .product-image img:hover {
-            transform: scale(1.05);
-        }
     </style>
 </head>
 <body>
@@ -450,7 +438,7 @@
         // Stato admin
         let adminMode = false;
 
-        // Tutti i 13 prodotti con foto corrette e link schede tecniche
+        // Tutti i 13 prodotti con nomi puliti (apostrofi normali)
         const products = [
             {
                 "id": "crema-antirughe",
@@ -553,41 +541,23 @@
             },
             {
                 "id": "balsamo-argan",
-                "nome": "Balsamo – Olio di Argan",
+                "nome": "Balsamo - Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/balsamo.jpeg",
                 "scheda": "https://www.gardalakebeauty.com/shop-2/",
-                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Balsamo – Olio di Argan"
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Balsamo - Olio di Argan"
             },
             {
                 "id": "shampoo-detox",
-                "nome": "Shampoo detox – Olio di Argan",
+                "nome": "Shampoo detox - Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
                 "immagine": "https://raw.githubusercontent.com/Padu76/stock-cosmetici/main/shampoo-detox.jpeg",
                 "scheda": "https://www.gardalakebeauty.com/shop-2/",
-                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo detox – Olio di Argan"
+                "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo detox - Olio di Argan"
             }
         ];
-
-        // Funzione per fare l'escape sicuro delle stringhe HTML
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-        }
-
-        // Converte link immagini (ora tutte vengono da GitHub)
-        function getImageUrl(imageUrl) {
-            // Ora tutte le immagini sono già link diretti da GitHub
-            return imageUrl;
-        }
 
         // Carica quantità salvate dal localStorage
         function loadQuantities() {
@@ -595,7 +565,7 @@
             if (saved) {
                 const savedData = JSON.parse(saved);
                 products.forEach(product => {
-                    const savedProduct = savedData.find(p => p.nome === product.nome);
+                    const savedProduct = savedData.find(p => p.id === product.id || p.nome === product.nome);
                     if (savedProduct) {
                         product.quantita = savedProduct.quantita;
                     }
@@ -612,27 +582,28 @@
         function createProductCard(product) {
             const quantityClass = product.quantita === 0 ? 'out' : (product.quantita === 1 ? 'low' : '');
             const quantityText = product.quantita === 0 ? 'Esaurito' : `${product.quantita} disponibili`;
-            const imageUrl = getImageUrl(product.immagine);
+            const imageUrl = product.immagine;
             
             const imageElement = imageUrl ? 
-                `<img src="${imageUrl}" alt="${product.nome}" class="product-img" data-image-url="${imageUrl}" data-product-name="${product.nome}" onerror="this.parentElement.innerHTML='🧴<br>Immagine non disponibile'">` :
+                `<img src="${imageUrl}" alt="${product.nome}" class="product-img" data-image-url="${imageUrl}" data-product-name="${product.nome}">` :
                 `🧴<br>${product.nome.split(' ').slice(0, 3).join(' ')}`;
 
             const quantityDisplay = adminMode ? 
                 `<div class="quantity-editor">
                     <input type="number" class="quantity-input" value="${product.quantita}" 
-                           onchange="updateQuantity('${product.nome}', this.value)" min="0" max="99">
+                           data-product-id="${product.id}" min="0" max="99">
                     <div class="quantity-buttons">
-                        <button class="qty-btn" onclick="changeQuantity('${product.nome}', 1)">+</button>
-                        <button class="qty-btn" onclick="changeQuantity('${product.nome}', -1)">-</button>
+                        <button class="qty-btn qty-plus" data-product-id="${product.id}">+</button>
+                        <button class="qty-btn qty-minus" data-product-id="${product.id}">-</button>
                     </div>
                  </div>` :
-                `<span class="quantity-badge ${quantityClass}" ${adminMode ? 'onclick="editQuantity(this)"' : ''}>${quantityText}</span>`;
+                `<span class="quantity-badge ${quantityClass}">${quantityText}</span>`;
 
             return `
-                <div class="product-card">
-                    <div class="product-image ${!imageUrl ? 'placeholder' : ''}">>
-                        ${product.quantita === 1 ? '<div class="ultimo-pezzo">ULTIMO PEZZO!</div>' : ''}
+                <div class="product-card ${product.quantita === 0 ? 'esaurito' : ''}">
+                    <div class="product-image ${!imageUrl ? 'placeholder' : ''}">
+                        ${product.quantita === 1 && product.quantita > 0 ? '<div class="ultimo-pezzo">ULTIMO PEZZO!</div>' : ''}
+                        ${product.quantita === 0 ? '<div class="esaurito-banner">ESAURITO</div>' : ''}
                         ${imageElement}
                     </div>
                     <div class="product-content">
@@ -662,8 +633,8 @@
         }
 
         // Prenota prodotto (diminuisce quantità)
-        function reserveProduct(productName) {
-            const product = products.find(p => p.nome === productName);
+        function reserveProduct(productId) {
+            const product = products.find(p => p.id === productId);
             if (product && product.quantita > 0) {
                 product.quantita--;
                 saveQuantities();
@@ -784,8 +755,6 @@
             }
         }
 
-        // Puoi chiamare resetStock() dalla console del browser se serve
-
         // Funzioni admin per gestione quantità
         function toggleAdminMode() {
             if (!adminMode) {
@@ -857,6 +826,8 @@
                 closeImageModal();
             }
         });
+
+        // Puoi chiamare resetStock() dalla console del browser se serve
     </script>
 </body>
 </html>
