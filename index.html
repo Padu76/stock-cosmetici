@@ -453,6 +453,7 @@
         // Tutti i 13 prodotti con foto corrette e link schede tecniche
         const products = [
             {
+                "id": "crema-antirughe",
                 "nome": "CREMA ANTIRUGHE NUTRIENTE",
                 "prezzo": 15,
                 "quantita": 1,
@@ -461,6 +462,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTIRUGHE NUTRIENTE"
             },
             {
+                "id": "crema-mani",
                 "nome": "CREMA MANI GIOVINEZZA",
                 "prezzo": 3,
                 "quantita": 3,
@@ -469,6 +471,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA MANI GIOVINEZZA"
             },
             {
+                "id": "crema-rassodante",
                 "nome": "CREMA RASSODANTE corpo & viso",
                 "prezzo": 15,
                 "quantita": 1,
@@ -477,6 +480,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RASSODANTE corpo & viso"
             },
             {
+                "id": "crema-idratante",
                 "nome": "CREMA IDRATANTE CORPO",
                 "prezzo": 15,
                 "quantita": 1,
@@ -485,6 +489,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA IDRATANTE CORPO"
             },
             {
+                "id": "crema-rigenerante",
                 "nome": "CREMA RIGENERANTE OCCHI & DECOLTE'",
                 "prezzo": 15,
                 "quantita": 1,
@@ -493,6 +498,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA RIGENERANTE OCCHI & DECOLTE'"
             },
             {
+                "id": "crema-anticellulite",
                 "nome": "CREMA ANTICELLULITE",
                 "prezzo": 15,
                 "quantita": 1,
@@ -501,6 +507,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare CREMA ANTICELLULITE"
             },
             {
+                "id": "latte-corpo",
                 "nome": "LATTE CORPO GIOVINEZZA",
                 "prezzo": 12,
                 "quantita": 1,
@@ -509,6 +516,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE CORPO GIOVINEZZA"
             },
             {
+                "id": "latte-micellare",
                 "nome": "LATTE MICELLARE DETERGENTE/STRUCCANTE",
                 "prezzo": 12,
                 "quantita": 2,
@@ -517,6 +525,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare LATTE MICELLARE DETERGENTE/STRUCCANTE"
             },
             {
+                "id": "olio-setificante",
                 "nome": "OLIO SETIFICANTE IDRATANTE",
                 "prezzo": 14,
                 "quantita": 1,
@@ -525,6 +534,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare OLIO SETIFICANTE IDRATANTE"
             },
             {
+                "id": "burro-karite-vitace",
                 "nome": "BURRO DI KARITE' + VITAMINE A-C-E",
                 "prezzo": 12,
                 "quantita": 1,
@@ -533,6 +543,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare BURRO DI KARITE' + VITAMINE A-C-E"
             },
             {
+                "id": "shampoo-daily",
                 "nome": "Shampoo daily use - Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
@@ -541,6 +552,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Shampoo daily use - Olio di Argan"
             },
             {
+                "id": "balsamo-argan",
                 "nome": "Balsamo – Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
@@ -549,6 +561,7 @@
                 "whatsapp": "https://wa.me/393478881515?text=Ciao Andrea, vorrei prenotare Balsamo – Olio di Argan"
             },
             {
+                "id": "shampoo-detox",
                 "nome": "Shampoo detox – Olio di Argan",
                 "prezzo": 5,
                 "quantita": 1,
@@ -623,7 +636,7 @@
                             ${quantityDisplay}
                         </div>
                         ${product.quantita > 0 && !adminMode ? 
-                            `<a href="${product.whatsapp}" class="reserve-btn" target="_blank" onclick="reserveProduct(\`${product.nome}\`)">
+                            `<a href="${product.whatsapp}" class="reserve-btn" target="_blank" onclick="reserveProduct('${product.id}')">
                                 💬 Prenota su WhatsApp
                             </a>` :
                             product.quantita === 0 && !adminMode ?
@@ -735,8 +748,8 @@
             updateStats();
         }
 
-        function updateQuantity(productName, newQuantity) {
-            const product = products.find(p => p.nome === productName);
+        function updateQuantity(productId, newQuantity) {
+            const product = products.find(p => p.id === productId);
             if (product) {
                 product.quantita = Math.max(0, parseInt(newQuantity) || 0);
                 saveQuantities();
@@ -747,8 +760,8 @@
             }
         }
 
-        function changeQuantity(productName, delta) {
-            const product = products.find(p => p.nome === productName);
+        function changeQuantity(productId, delta) {
+            const product = products.find(p => p.id === productId);
             if (product) {
                 const newQuantity = Math.max(0, product.quantita + delta);
                 product.quantita = newQuantity;
