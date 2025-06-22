@@ -249,6 +249,29 @@
             z-index: 2;
         }
 
+        .esaurito-banner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(244, 67, 54, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .product-card.esaurito {
+            opacity: 0.6;
+        }
+
+        .product-card.esaurito .product-image img {
+            filter: grayscale(50%);
+        }
+
         .admin-controls {
             position: fixed;
             bottom: 20px;
@@ -727,7 +750,8 @@
         function changeQuantity(productName, delta) {
             const product = products.find(p => p.nome === productName);
             if (product) {
-                product.quantita = Math.max(0, product.quantita + delta);
+                const newQuantity = Math.max(0, product.quantita + delta);
+                product.quantita = newQuantity;
                 saveQuantities();
                 renderProducts();
                 updateStats();
