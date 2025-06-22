@@ -603,7 +603,7 @@
             const imageUrl = getImageUrl(product.immagine);
             
             const imageElement = imageUrl ? 
-                `<img src="${imageUrl}" alt="${product.nome}" onclick="openImageModal(\`${imageUrl}\`, \`${product.nome}\`)" onerror="this.parentElement.innerHTML='🧴<br>Immagine non disponibile'">` :
+                `<img src="${imageUrl}" alt="${product.nome}" data-image-url="${imageUrl}" data-product-name="${product.nome}" onclick="openImageModalByEvent(event)" onerror="this.parentElement.innerHTML='🧴<br>Immagine non disponibile'">` :
                 `🧴<br>${product.nome.split(' ').slice(0, 3).join(' ')}`;
 
             const quantityDisplay = adminMode ? 
@@ -636,7 +636,7 @@
                             ${quantityDisplay}
                         </div>
                         ${product.quantita > 0 && !adminMode ? 
-                            `<a href="${product.whatsapp}" class="reserve-btn" target="_blank" onclick="reserveProduct('${product.id}')">
+                            `<a href="${product.whatsapp}" class="reserve-btn" target="_blank" data-product-id="${product.id}" onclick="reserveProductByEvent(event)">
                                 💬 Prenota su WhatsApp
                             </a>` :
                             product.quantita === 0 && !adminMode ?
@@ -769,6 +769,35 @@
                 renderProducts();
                 updateStats();
             }
+        }
+
+        // Nuove funzioni che usano gli eventi (più sicure)
+        function updateQuantityByEvent(event) {
+            const productId = event.target.getAttribute('data-product-id');
+            const newQuantity = event.target.value;
+            updateQuantity(productId, newQuantity);
+        }
+
+        function changeQuantityByEvent(event) {
+            const productId = event.target.getAttribute('data-product-id');
+            const delta = parseInt(event.target.getAttribute('data-delta'));
+            changeQuantity(productId, delta);
+        }
+
+        function reserveProductByEvent(event) {
+            event.preventDefault();
+            const productId = event.target.getAttribute('data-product-id');
+            reserveProduct(productId);
+            // Riapri WhatsApp dopo aver aggiornato la quantità
+            setTimeout(() => {
+                window.open(event.target.href, '_blank');
+            }, 100);
+        }
+
+        function openImageModalByEvent(event) {
+            const imageUrl = event.target.getAttribute('data-image-url');
+            const productName = event.target.getAttribute('data-product-name');
+            openImageModal(imageUrl, productName);
         }
 
         // Funzioni per zoom immagini
