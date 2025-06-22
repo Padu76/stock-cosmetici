@@ -603,7 +603,7 @@
             const imageUrl = getImageUrl(product.immagine);
             
             const imageElement = imageUrl ? 
-                `<img src="${imageUrl}" alt="${product.nome}" data-image-url="${imageUrl}" data-product-name="${product.nome}" onclick="openImageModalByEvent(event)" onerror="this.parentElement.innerHTML='🧴<br>Immagine non disponibile'">` :
+                `<img src="${imageUrl}" alt="${product.nome}" class="product-img" data-image-url="${imageUrl}" data-product-name="${product.nome}" onerror="this.parentElement.innerHTML='🧴<br>Immagine non disponibile'">` :
                 `🧴<br>${product.nome.split(' ').slice(0, 3).join(' ')}`;
 
             const quantityDisplay = adminMode ? 
@@ -636,7 +636,7 @@
                             ${quantityDisplay}
                         </div>
                         ${product.quantita > 0 && !adminMode ? 
-                            `<a href="${product.whatsapp}" class="reserve-btn" target="_blank" data-product-id="${product.id}" onclick="reserveProductByEvent(event)">
+                            `<a href="${product.whatsapp}" class="reserve-btn reserve-product" target="_blank" data-product-id="${product.id}">
                                 💬 Prenota su WhatsApp
                             </a>` :
                             product.quantita === 0 && !adminMode ?
@@ -667,6 +667,61 @@
         function renderProducts() {
             const container = document.getElementById('products-container');
             container.innerHTML = products.map(createProductCard).join('');
+            
+            // Aggiungi event listeners dopo aver creato le card
+            setupEventListeners();
+        }
+
+        // Configura tutti gli event listeners
+        function setupEventListeners() {
+            // Event listeners per i pulsanti + e -
+            document.querySelectorAll('.qty-plus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    changeQuantity(productId, 1);
+                });
+            });
+
+            document.querySelectorAll('.qty-minus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    changeQuantity(productId, -1);
+                });
+            });
+
+            // Event listeners per gli input di quantità
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const newQuantity = this.value;
+                    updateQuantity(productId, newQuantity);
+                });
+            });
+
+            // Event listeners per le immagini (zoom)
+            document.querySelectorAll('.product-img').forEach(img => {
+                img.addEventListener('click', function() {
+                    const imageUrl = this.getAttribute('data-image-url');
+                    const productName = this.getAttribute('data-product-name');
+                    openImageModal(imageUrl, productName);
+                });
+            });
+
+            // Event listeners per i pulsanti prenotazione
+            document.querySelectorAll('.reserve-product').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productId = this.getAttribute('data-product-id');
+                    const whatsappUrl = this.href;
+                    
+                    reserveProduct(productId);
+                    
+                    // Apri WhatsApp dopo aver aggiornato
+                    setTimeout(() => {
+                        window.open(whatsappUrl, '_blank');
+                    }, 100);
+                });
+            });
         }
 
         // Aggiorna statistiche
@@ -769,35 +824,6 @@
                 renderProducts();
                 updateStats();
             }
-        }
-
-        // Nuove funzioni che usano gli eventi (più sicure)
-        function updateQuantityByEvent(event) {
-            const productId = event.target.getAttribute('data-product-id');
-            const newQuantity = event.target.value;
-            updateQuantity(productId, newQuantity);
-        }
-
-        function changeQuantityByEvent(event) {
-            const productId = event.target.getAttribute('data-product-id');
-            const delta = parseInt(event.target.getAttribute('data-delta'));
-            changeQuantity(productId, delta);
-        }
-
-        function reserveProductByEvent(event) {
-            event.preventDefault();
-            const productId = event.target.getAttribute('data-product-id');
-            reserveProduct(productId);
-            // Riapri WhatsApp dopo aver aggiornato la quantità
-            setTimeout(() => {
-                window.open(event.target.href, '_blank');
-            }, 100);
-        }
-
-        function openImageModalByEvent(event) {
-            const imageUrl = event.target.getAttribute('data-image-url');
-            const productName = event.target.getAttribute('data-product-name');
-            openImageModal(imageUrl, productName);
         }
 
         // Funzioni per zoom immagini
