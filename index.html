@@ -583,6 +583,12 @@
             return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
 
+        // Converte link immagini (ora tutte vengono da GitHub)
+        function getImageUrl(imageUrl) {
+            // Ora tutte le immagini sono già link diretti da GitHub
+            return imageUrl;
+        }
+
         // Carica quantità salvate dal localStorage
         function loadQuantities() {
             const saved = localStorage.getItem('cosmetics-stock');
